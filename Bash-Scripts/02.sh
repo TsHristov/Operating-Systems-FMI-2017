@@ -11,11 +11,10 @@ if [ $# -ne 3 ]; then
     exit 1
 fi
 
-if [ $(id -u) -ne 0 ]; then
-    echo "Script must be run as root!"
-    exit 1
-fi
-
+# if [ $(id -u) -ne 0 ]; then
+#     echo "Script must be run as root!"
+#     exit 1
+# fi
 
 check_dir "$1"
 check_dir "$2"
@@ -29,8 +28,9 @@ SRC=$(dirname "$1")"/"$(basename "$1")
 DST=$(dirname "$2")"/"$(basename "$2")
 STRING="$3"
 
-while read FILE; do
-    echo "${FILE}"
-done < <(find ${SRC} -name "*${STRING}*")
-
+for file in $(find "${SRC}" -name "*${STRING}*"); do
+    DSTFILE=$(echo ${file} | sed -e "s|${SRC}|${DST}|")
+    mkdir -p $(dirname ${DSTFILE})
+    mv ${file} ${DSTFILE}
+done
 
