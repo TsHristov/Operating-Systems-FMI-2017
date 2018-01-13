@@ -12,13 +12,11 @@ int main(int argc, char* argv[]){
   char* source = NULL;
   char* destination = NULL;
 
-  if (argc == 1){
-    errx(0, "missing file operand");
+  if (argc != 3){
+    errx(0, "Usage: cp SOURCE DEST");
   } else if (argc == 3){
     source = argv[1];
     destination = argv[2];    
-  } else {
-    errx(1, "Usage: cp SOURCE DEST");
   }
     
   int fd1;
