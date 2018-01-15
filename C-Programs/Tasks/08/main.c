@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <err.h>
+#include <string.h>
 
 int main(int argc, char *argv[]){
   if(argc != 2){
@@ -12,7 +14,7 @@ int main(int argc, char *argv[]){
   }
 
   int fd;
-  if((fd = open(argv[1], O_CREAT | O_RDWR | O_TRUNC)) == -1){
+  if((fd = open(argv[1], O_CREAT | O_RDWR | O_TRUNC, S_IRWXU)) == -1){
     err(1, "%s\n", argv[1]);
   }
   
@@ -22,10 +24,9 @@ int main(int argc, char *argv[]){
   }
   if(child_pid == 0){
     const char *text = "foobar";
-    if(write(fd, text, sizeof(text)) == -1){
+    if(write(fd, text, strlen(text)) == -1){
       err(2, "%s\n", argv[1]);
     }
-    //!!!!!
     exit(0);
   }
 
