@@ -7,17 +7,18 @@
 #include <err.h>
 #include <string.h>
 #include <stdint.h>
-/* #include <inttypes.h> */
 
-struct BITMAP_FILE_HEADER {
-  uint8_t  signature[2];
-  uint16_t size;
-  uint8_t  reserved[2];
-  uint16_t offset;
-};
+struct BMP_HEADER {
+  uint8_t  ID_FIELD_1;    // 1B
+  uint8_t  ID_FIELD_2;    // 1B
+  uint32_t FILE_SIZE;     // 4B
+  uint16_t RESERVED_1;    // 2B
+  uint16_t RESERVED_2;    // 2B
+  uint32_t OFFSET;        // 4B 
+}__attribute__((packed)); // -> total 14B
 
 struct BMP_IMAGE_FILE {
-  struct BITMAP_FILE_HEADER header;
+  struct BMP_HEADER bmp_header;
 };
   
 int main(int argc, char *argv[]){
@@ -41,11 +42,10 @@ int main(int argc, char *argv[]){
     err(2, "Could not read: %s", input_image);
   }
 
-  fprintf(stdout, "%c\n", BMP_IMAGE.header.signature[0]);
-  fprintf(stdout, "%c\n", BMP_IMAGE.header.signature[1]);
-  fprintf(stdout, "%d\n", BMP_IMAGE.header.size);
-  fprintf(stdout, "%s\n", BMP_IMAGE.header.reserved);
-  fprintf(stdout, "%d\n", BMP_IMAGE.header.offset);
+  fprintf(stdout, "%c\n", BMP_IMAGE.bmp_header.ID_FIELD_1);
+  fprintf(stdout, "%c\n", BMP_IMAGE.bmp_header.ID_FIELD_2);
+  fprintf(stdout, "%d\n", BMP_IMAGE.bmp_header.FILE_SIZE);
+  fprintf(stdout, "%d\n", BMP_IMAGE.bmp_header.OFFSET);
 
   close(fd);
   exit(0);
